@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Admin Page</title>
+  <link rel="icon" type="image/jpeg" href="/assets/original-a678c52db910438d85ecfca032fb7cb4.jpg" />
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Poppins', sans-serif;
+      background: linear-gradient(135deg, #dce3f2, #e4e0f8);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 3rem 1rem;
+    }
+
+    .head {
+      font-size: 2rem;
+    }
+
+    h2 {
+      margin-bottom: 1rem;
+      color: #2d2d2d;
+      font-weight: 600;
+    }
+
+    .form-card {
+      background: rgba(255, 255, 255, 0.7);
+      backdrop-filter: blur(10px);
+      border-radius: 16px;
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+      padding: 2rem;
+      width: 100%;
+      max-width: 500px;
+      margin-bottom: 2rem;
+    }
+
+    input, textarea, select {
+      width: 100%;
+      padding: 0.8rem 1rem;
+      margin-bottom: 1rem;
+      border: 1px solid #ccc;
+      border-radius: 10px;
+      font-size: 1rem;
+      transition: 0.2s border-color;
+    }
+
+    input:focus, textarea:focus, select:focus {
+      border-color: #7a5cf2;
+      outline: none;
+    }
+
+    textarea {
+      resize: vertical;
+      min-height: 100px;
+    }
+
+    button {
+      width: 100%;
+      padding: 0.9rem;
+      font-size: 1rem;
+      border: none;
+      border-radius: 12px;
+      font-weight: 600;
+      color: white;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+    }
+
+    .publish-btn {
+      background: #6c5ce7;
+    }
+
+    .publish-btn:hover {
+      background: #4b3ecf;
+    }
+
+    .delete-btn {
+      background: #d63031;
+      margin-top: 0.5rem;
+    }
+
+    .delete-btn:hover {
+      background: #b22424;
+    }
+
+    .article-list {
+      display: grid;
+      gap: 0.75rem;
+    }
+
+    .article-item {
+      border: 1px solid #ddd;
+      border-radius: 12px;
+      padding: 1rem;
+      background: rgba(255, 255, 255, 0.85);
+    }
+
+    .article-item h3 {
+      font-size: 1rem;
+      margin-bottom: 0.4rem;
+    }
+
+    .article-meta {
+      font-size: 0.9rem;
+      color: #555;
+      margin-bottom: 0.75rem;
+      word-break: break-all;
+    }
+
+    .article-item button {
+      margin-top: 0;
+    }
+
+    @media (max-width: 500px) {
+      .form-card {
+        padding: 1.5rem;
+      }
+
+      input, textarea {
+        font-size: 0.95rem;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <h2 class="head">Admin Page</h2>
+
+  <div class="form-card">
+    <h2>Post News Article</h2>
+    <form id="newsForm">
+      <input id="title" name="title" placeholder="Title" required>
+      <input id="author" name="author" placeholder="Author">
+      <input id="image" name="image" placeholder="Image URL">
+      <textarea id="content" name="content" placeholder="News Content" required></textarea>
+
+      <select name="language" id="language" required>
+        <option value="">Select Language</option>
+        <option value="en">English</option>
+        <option value="hi">Hindi</option>
+      </select>
+
+      <select name="category" id="category" required>
+        <option value="">Select Category</option>
+        <option value="India">India</option>
+        <option value="Politics">Politics</option>
+        <option value="Technology">Technology</option>
+        <option value="World">World</option>
+        <option value="Sports">Sports</option>
+        <option value="Entertainment">Entertainment</option>
+      </select>
+
+      <input id="date" name="date" type="datetime-local" required>
+      <button type="submit" class="publish-btn">Publish</button>
+    </form>
+  </div>
+
+  <div class="form-card">
+    <h2>Delete News Article</h2>
+    <input id="deleteId" placeholder="Enter article ID to delete">
+    <button class="delete-btn" onclick="deleteNews()">Delete</button>
+  </div>
+
+  <div class="form-card">
+    <h2>Existing Articles</h2>
+    <div id="articleList" class="article-list">Loading articles...</div>
+  </div>
+
+  <script>
+    const newsForm = document.getElementById('newsForm');
+    const dateInput = document.getElementById('date');
+
+    function setCurrentDateTime() {
+      const now = new Date();
+      const offset = now.getTimezoneOffset();
+      const localDate = new Date(now.getTime() - offset * 60000)
+        .toISOString()
+        .slice(0, 16);
+
+      dateInput.value = localDate;
+    }
+
+    setCurrentDateTime();
+
+    newsForm.addEventListener('submit', async (e) => {
+      e.preventDefault();
+
+      const title = document.querySelector('[name="title"]').value;
+      const author = document.querySelector('[name="author"]').value;
+      const image = document.querySelector('[name="image"]').value;
+      const content = document.querySelector('[name="content"]').value;
+      const date = document.querySelector('[name="date"]').value;
+      const language = document.querySelector('[name="language"]').value;
+      const category = document.querySelector('[name="category"]').value;
+
+      try {
+        const response = await fetch('/api/news', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ title, author, image, content, date, language, category })
+        });
+
+        const data = await response.json();
+        if (response.ok) {
+          alert('News published successfully!');
+          newsForm.reset();
+          setCurrentDateTime();
+          loadArticles();
+        } else {
+          alert('Failed to publish: ' + data.error);
+        }
+      } catch (error) {
+        alert('Error publishing news: ' + error.message);
+      }
+    });
+
+    async function loadArticles() {
+      const list = document.getElementById('articleList');
+      list.innerHTML = 'Loading articles...';
+
+      try {
+        const response = await fetch('/api/news');
+        const articles = await response.json();
+
+        if (!Array.isArray(articles) || articles.length === 0) {
+          list.innerHTML = 'No articles found.';
+          return;
+        }
+
+        list.innerHTML = '';
+        articles.forEach((article) => {
+          const item = document.createElement('div');
+          item.className = 'article-item';
+          item.innerHTML = `
+            <h3>${article.title}</h3>
+            <div class="article-meta">ID: ${article._id}</div>
+            <button type="button" class="delete-btn">Use This ID</button>
+          `;
+
+          item.querySelector('button').addEventListener('click', () => {
+            document.getElementById('deleteId').value = article._id;
+          });
+
+          list.appendChild(item);
+        });
+      } catch (error) {
+        list.innerHTML = 'Failed to load articles.';
+      }
+    }
+
+    async function deleteNews() {
+      const articleId = document.getElementById('deleteId').value.trim();
+      if (!articleId) return alert('Please enter an article ID to delete.');
+
+      if (!confirm(`Are you sure you want to delete the article with ID "${articleId}"?`)) return;
+
+      try {
+        const response = await fetch(`/api/news/${encodeURIComponent(articleId)}`, {
+          method: 'DELETE'
+        });
+
+        const data = await response.json();
+
+        if (response.ok) {
+          alert('News deleted successfully.');
+          document.getElementById('deleteId').value = '';
+          loadArticles();
+        } else {
+          alert('Delete failed: ' + data.error);
+        }
+      } catch (err) {
+        alert('Error deleting news: ' + err.message);
+      }
+    }
+
+    loadArticles();
+  </script>
+</body>
+</html>

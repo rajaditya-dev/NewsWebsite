@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>News Article</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      padding: 2rem;
+      background: #f4f4f4;
+    }
+    .container {
+      background: white;
+      padding: 2rem;
+      max-width: 800px;
+      margin: auto;
+      border-radius: 8px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+    }
+    img {
+      max-width: 100%;
+      height: auto;
+      margin-bottom: 1rem;
+    }
+  </style>
+</head>
+<body>
+  <div class="container" id="article-container">
+    Loading article...
+  </div>
+
+  <script>
+    async function loadArticle() {
+      const urlParams = new URLSearchParams(window.location.search);
+      const articleId = urlParams.get('id');
+
+      if (!articleId) {
+        document.getElementById('article-container').innerText = "No article specified.";
+        return;
+      }
+
+      try {
+        const res = await fetch(`/api/news/${articleId}`);
+        const article = await res.json();
+
+        const container = document.getElementById('article-container');
+        container.innerHTML = `
+          <h1>${article.title}</h1>
+          <small>By ${article.author || 'Unknown'} | ${new Date(article.date).toLocaleDateString()}</small>
+          <img src="${article.image}" alt="News Image">
+          <p>${article.content.replace(/\n/g, '<br>')}</p>
+        `;
+      } catch (err) {
+        document.getElementById('article-container').innerText = "Error loading article.";
+      }
+    }
+
+    loadArticle();
+  </script>
+</body>
+</html>
