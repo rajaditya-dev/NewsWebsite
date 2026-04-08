@@ -4,55 +4,323 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>News Article</title>
+  <link rel="icon" type="image/jpeg" href="/assets/original-a678c52db910438d85ecfca032fb7cb4.jpg" />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Newsreader:opsz,wght@6..72,500;6..72,700;6..72,800&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
   <style>
+    :root {
+      --ink: #17120f;
+      --muted: #6d625a;
+      --paper: #f4efe6;
+      --panel: #fffaf1;
+      --brand: #9b1c20;
+      --brand-dark: #3a1115;
+      --gold: #d09b3c;
+      --line: rgba(23, 18, 15, 0.16);
+      --shadow: 0 24px 70px rgba(42, 25, 11, 0.16);
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
     body {
-      font-family: Arial, sans-serif;
-      padding: 2rem;
-      background: #f4f4f4;
+      margin: 0;
+      font-family: "Space Grotesk", sans-serif;
+      color: var(--ink);
+      background:
+        radial-gradient(circle at 15% 0%, rgba(208, 155, 60, 0.18), transparent 30rem),
+        linear-gradient(135deg, rgba(155, 28, 32, 0.08), transparent 28rem),
+        var(--paper);
     }
-    .container {
-      background: white;
-      padding: 2rem;
-      max-width: 800px;
-      margin: auto;
-      border-radius: 8px;
-      box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+
+    a {
+      color: inherit;
     }
-    img {
-      max-width: 100%;
-      height: auto;
-      margin-bottom: 1rem;
+
+    .topbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 1rem;
+      padding: 1rem clamp(1rem, 4vw, 4rem);
+      border-bottom: 1px solid var(--line);
+      background: rgba(244, 239, 230, 0.88);
+      backdrop-filter: blur(18px);
+      position: sticky;
+      top: 0;
+      z-index: 10;
+    }
+
+    .brand {
+      font-family: "Newsreader", serif;
+      font-size: 1.7rem;
+      font-weight: 800;
+      letter-spacing: -0.08em;
+      text-decoration: none;
+      text-transform: uppercase;
+    }
+
+    .topbar nav {
+      display: flex;
+      gap: 0.6rem;
+      color: var(--muted);
+      font-size: 0.78rem;
+      font-weight: 800;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+    }
+
+    .topbar nav a {
+      text-decoration: none;
+    }
+
+    .article-shell {
+      width: min(1120px, calc(100% - 2rem));
+      margin: 2rem auto 3rem;
+    }
+
+    .article-hero {
+      overflow: hidden;
+      border: 1px solid var(--line);
+      border-radius: 34px;
+      background: var(--panel);
+      box-shadow: var(--shadow);
+    }
+
+    .hero-image {
+      min-height: 520px;
+      position: relative;
+      display: grid;
+      align-items: end;
+      color: #fffaf1;
+      background: var(--brand-dark);
+    }
+
+    .hero-image img {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      filter: saturate(0.95) contrast(1.05);
+    }
+
+    .hero-image::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(180deg, rgba(0, 0, 0, 0.08), rgba(0, 0, 0, 0.88));
+    }
+
+    .hero-copy {
+      position: relative;
+      z-index: 1;
+      max-width: 900px;
+      padding: clamp(1.4rem, 5vw, 3rem);
+    }
+
+    .tag {
+      display: inline-flex;
+      width: fit-content;
+      border-radius: 999px;
+      padding: 0.38rem 0.75rem;
+      color: #fffaf1;
+      background: var(--brand);
+      font-size: 0.72rem;
+      font-weight: 900;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+    }
+
+    h1 {
+      margin: 0.85rem 0;
+      font-family: "Newsreader", serif;
+      font-size: clamp(2.8rem, 7vw, 6.4rem);
+      line-height: 0.88;
+      letter-spacing: -0.08em;
+    }
+
+    .meta {
+      color: rgba(255, 250, 241, 0.78);
+      font-size: 0.86rem;
+      font-weight: 800;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+
+    .article-body {
+      display: grid;
+      grid-template-columns: minmax(0, 720px) minmax(220px, 1fr);
+      gap: 2rem;
+      padding: clamp(1.4rem, 4vw, 3rem);
+    }
+
+    .story-text {
+      font-family: "Newsreader", serif;
+      font-size: clamp(1.25rem, 2vw, 1.55rem);
+      line-height: 1.72;
+      color: var(--ink);
+    }
+
+    .story-text p {
+      margin: 0 0 1.25rem;
+    }
+
+    .story-aside {
+      align-self: start;
+      border-left: 4px solid var(--brand);
+      padding: 1.25rem;
+      border-radius: 0 22px 22px 0;
+      background: rgba(155, 28, 32, 0.08);
+    }
+
+    .story-aside h2 {
+      margin: 0 0 0.6rem;
+      font-size: 0.78rem;
+      color: var(--brand);
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+    }
+
+    .story-aside p {
+      margin: 0;
+      color: var(--muted);
+      line-height: 1.65;
+    }
+
+    .loading,
+    .error {
+      min-height: 50vh;
+      display: grid;
+      place-items: center;
+      padding: 3rem;
+      border: 1px dashed var(--line);
+      border-radius: 28px;
+      color: var(--muted);
+      background: var(--panel);
+      text-align: center;
+    }
+
+    footer {
+      padding: 2rem 1rem;
+      color: #fffaf1;
+      text-align: center;
+      background: var(--brand-dark);
+    }
+
+    @media (max-width: 780px) {
+      .topbar {
+        align-items: flex-start;
+        flex-direction: column;
+      }
+
+      .topbar nav {
+        width: 100%;
+        overflow-x: auto;
+        white-space: nowrap;
+      }
+
+      .hero-image {
+        min-height: 430px;
+      }
+
+      .article-body {
+        grid-template-columns: 1fr;
+      }
     }
   </style>
 </head>
 <body>
-  <div class="container" id="article-container">
-    Loading article...
-  </div>
+  <header class="topbar">
+    <a class="brand" href="/">Daily News</a>
+    <nav aria-label="Article navigation">
+      <a href="/">Home</a>
+      <a href="/admin.html">Admin Portal</a>
+      <a href="/api/news">API</a>
+    </nav>
+  </header>
+
+  <main class="article-shell">
+    <article class="article-hero" id="article-container">
+      <div class="loading">Loading article...</div>
+    </article>
+  </main>
+
+  <footer>
+    <p>&copy; 2026 Daily News | Long-form reporting with a magazine edge.</p>
+  </footer>
 
   <script>
+    const placeholderImage = 'https://images.unsplash.com/photo-1495020689067-958852a7765e?auto=format&fit=crop&w=1400&q=80';
+
+    function escapeHTML(value = '') {
+      return String(value)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#039;');
+    }
+
+    function formatDate(date) {
+      if (!date) return 'Date unavailable';
+      return new Date(date).toLocaleDateString([], {
+        weekday: 'long',
+        month: 'long',
+        day: 'numeric',
+        year: 'numeric'
+      });
+    }
+
+    function formatContent(content = '') {
+      return String(content)
+        .split(/\n+/)
+        .filter(Boolean)
+        .map(paragraph => `<p>${escapeHTML(paragraph)}</p>`)
+        .join('');
+    }
+
     async function loadArticle() {
       const urlParams = new URLSearchParams(window.location.search);
       const articleId = urlParams.get('id');
+      const container = document.getElementById('article-container');
 
       if (!articleId) {
-        document.getElementById('article-container').innerText = "No article specified.";
+        container.innerHTML = '<div class="error">No article specified. Go back to the homepage and open a story.</div>';
         return;
       }
 
       try {
-        const res = await fetch(`/api/news/${articleId}`);
+        const res = await fetch(`/api/news/${encodeURIComponent(articleId)}`);
         const article = await res.json();
 
-        const container = document.getElementById('article-container');
+        if (!res.ok || article.error) {
+          container.innerHTML = `<div class="error">${escapeHTML(article.error || 'Article not found.')}</div>`;
+          return;
+        }
+
+        document.title = `${article.title || 'News Article'} | Daily News`;
         container.innerHTML = `
-          <h1>${article.title}</h1>
-          <small>By ${article.author || 'Unknown'} | ${new Date(article.date).toLocaleDateString()}</small>
-          <img src="${article.image}" alt="News Image">
-          <p>${article.content.replace(/\n/g, '<br>')}</p>
+          <section class="hero-image">
+            <img src="${escapeHTML(article.image || placeholderImage)}" alt="${escapeHTML(article.title || 'News image')}">
+            <div class="hero-copy">
+              <span class="tag">${escapeHTML(article.category || 'Feature')}</span>
+              <h1>${escapeHTML(article.title || 'Untitled Story')}</h1>
+              <div class="meta">By ${escapeHTML(article.author || 'Daily News Desk')} | ${formatDate(article.date)}</div>
+            </div>
+          </section>
+          <section class="article-body">
+            <div class="story-text">${formatContent(article.content || 'No article content available.')}</div>
+            <aside class="story-aside">
+              <h2>Story File</h2>
+              <p>Category: ${escapeHTML(article.category || 'News')}<br>Language: ${escapeHTML(article.language || 'en')}<br>Published: ${formatDate(article.date)}</p>
+            </aside>
+          </section>
         `;
       } catch (err) {
-        document.getElementById('article-container').innerText = "Error loading article.";
+        container.innerHTML = '<div class="error">Error loading article. Please try again later.</div>';
       }
     }
 
