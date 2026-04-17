@@ -1,4 +1,4 @@
-# Daily News
+# NewsThrone
 
 A full-stack bilingual news publishing website built with Node.js, Express, MongoDB, and vanilla HTML/CSS/JavaScript. The project includes a bold magazine-style public homepage, a detailed article reading page, and a modern admin studio for publishing and deleting news articles.
 
@@ -166,9 +166,9 @@ Example request body:
 ```json
 {
   "title": "India Test News",
-  "author": "Daily News Desk",
+  "author": "NewsThrone Desk",
   "image": "https://example.com/image.jpg",
-  "content": "This is a test article for the Daily News website.",
+  "content": "This is a test article for the NewsThrone website.",
   "date": "2026-04-08T15:30",
   "language": "en",
   "category": "India"
